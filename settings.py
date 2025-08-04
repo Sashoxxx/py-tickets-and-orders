@@ -22,6 +22,7 @@ USE_I18N = True
 
 USE_TZ = False
 
+TIME_ZONE = "Europe/Kiev"
 INSTALLED_APPS = [
     "db",
     "django.contrib.auth",

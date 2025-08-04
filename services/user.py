@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.db import IntegrityError
 
 from db.models import User
 
@@ -38,23 +37,23 @@ def update_user(
         first_name: str = None,
         last_name: str = None
 ) -> User:
-    user = get_user_model().objects.get(pk=user_id)
-    if username:
-        uname = user.username
-        try:
-            user.username = username
-            user.save()
-        except IntegrityError:
-            user.username = uname
-            user.save()
+    user = User.objects.get(id=user_id)
+
+    if username and username != user.username:
+        if User.objects.filter(username=username).exclude(id=user_id).exists():
+            raise ValueError("Username already taken")
+        user.username = username
 
     if password:
         user.set_password(password)
-    if email:
+
+    if email is not None:
         user.email = email
-    if first_name:
+
+    if first_name is not None:
         user.first_name = first_name
-    if last_name:
+
+    if last_name is not None:
         user.last_name = last_name
 
     user.save()
